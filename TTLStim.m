@@ -57,11 +57,11 @@ ui.fname = uicontrol('style','text','string', filename, 'position',[130 350 200 
         savedata = [savedata;[count_n, stim_n]];
         stim_order = [stim_order;pulsepatterns(stim_n)];
         csvwrite([pathname filename],savedata);
-        
+
         %set(ui.table, 'Data', stim_order);
         %set next stim
         SetRand;
-        
+
     end
 
 %%
@@ -76,11 +76,11 @@ ui.fname = uicontrol('style','text','string', filename, 'position',[130 350 200 
                 stim_n = rand_set(amari+1);
         end
         %
-        
+
         cycle_n = ceil(count_n/6); %cycle_n
         %stim_n = rand_set(amari)+1; %stim_n
-        
-        
+
+
         count_n = count_n + 1;
         DispUpdate;
     end
@@ -105,7 +105,7 @@ ui.fname = uicontrol('style','text','string', filename, 'position',[130 350 200 
         savedata = [];
         stim_order = [];
         set(ui.fname,'string',filename)
-        
+
         ResetCycle;
     end
 
@@ -130,6 +130,25 @@ ui.fname = uicontrol('style','text','string', filename, 'position',[130 350 200 
         uitable('Data', log_stim);
     end
 %% NI DAQ
+
+%for 64bit DAQ toolbox
+    function TTLON
+      % For DAQ devices without CTR output
+      % pulse repetetion is set by tic, toc timer
+      %(,thus the pulse cycles might not be precise)
+        for n = 1:train_n(stim_n)
+            tic;
+            outputSingleScan(dio, 1);
+            while toc <= stim_ms(stim_n)/1000
+            end
+
+            outputSingleScan(dio, 0);
+            while toc <= 2*stim_ms(stim_n)/1000
+            end
+            toc
+        end
+    end
+%{
     function TTLON
         for n = 1:train_n(stim_n)
             tic;
@@ -144,6 +163,7 @@ ui.fname = uicontrol('style','text','string', filename, 'position',[130 350 200 
             %pause(stim_ms(stim_n)/1000);
         end
     end
+%}
 %%
 
 end

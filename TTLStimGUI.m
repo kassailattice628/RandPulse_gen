@@ -1,7 +1,6 @@
 %TTLStimGUI
 
 %%
-clear all;
 close all;
 
 global dio
@@ -26,11 +25,17 @@ global stim_order
 global logdata
 
 %% NI-USB-6501 is recognized "Dev6" at Sakatani san's PC
-%
+%{
 dio = digitalio('nidaq','dev6'); %digital object for trigger output
 addline(dio,0,0,'out'); %Use port0/line0
 putvalue(dio, 0); %reset TTL level
 %}
+
+%% for 64bit DAQ toolbox
+dev = daq.getDevices; %Device information is acquired from getDevices mthod.
+dio = daq.createSession(dev.Vendor.ID); 
+addDigitalChannel(dio, dev.ID, 'port0/line0', 'OutputOnly'); %Use port0/line0
+outputSingleScan(dio, 0); %reset TTL level
 
 %% set filename
 [filename, pathname] = uiputfile('.csv', 'Select File to Write');
@@ -60,5 +65,5 @@ train_n = [1, 1, 1, 5, 10, 20];
 savedata = [];
 stim_order = [];
 logdata = [];
-%% function TTLStim åƒÇ—èoÇµ
+%% function TTLStim ÔøΩƒÇ—èoÔøΩÔøΩ
 TTLStim
