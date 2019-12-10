@@ -1,4 +1,4 @@
-function TTLStim
+function TTLStim_Sara
 %%%%TTL Pulse Gen%%%%%
 % randamize pulse patterns
 global dio
@@ -66,18 +66,19 @@ ui.fname = uicontrol('style','text','string', filename, 'position',[130 350 200 
 
 %%
     function SetRand
-        amari = rem(count_n, 6);
+        n = size(pulsepatterns,1);
+        amari = rem(count_n, n);
         switch amari
             case 0 %set next set
                 %amari = 6;
-                rand_set = randperm(6);
+                rand_set = randperm(n);
                 stim_n = rand_set(1);
-            case {1,2,3,4,5}
+            otherwise
                 stim_n = rand_set(amari+1);
         end
         %
 
-        cycle_n = ceil(count_n/6); %cycle_n
+        cycle_n = ceil(count_n/n); %cycle_n
         %stim_n = rand_set(amari)+1; %stim_n
 
 
@@ -89,7 +90,7 @@ ui.fname = uicontrol('style','text','string', filename, 'position',[130 350 200 
     function ResetCycle(hObject,callbackdata)
         count_n = 1;
         cycle_n = 1;
-        rand_set = randperm(6);
+        rand_set = randperm(size(pulsepatterns,1));
         stim_n = rand_set(1);
         DispUpdate;
     end
